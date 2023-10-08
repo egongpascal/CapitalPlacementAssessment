@@ -1,6 +1,7 @@
+using AutoMapper;
+using CapitalPlacementAssessment.Repository;
 using CapitalPlacementAssessment.Repository.Implementations;
-using CapitalPlacementAssessment.Services.Implementation;
-using CapitalPlacementAssessment.Services.Interfaces;
+using Microsoft.Azure.Cosmos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,17 +12,44 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IProgramRepository, ProgramRepository>();
-builder.Services.AddScoped<IApplicationTemplateRepo, ApplicationTemplateRepo>();
-builder.Services.AddScoped<IWorkflowRepository, WorkflowRepository>();
+var mapperConfig = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile<AutoMapperProfile>(); 
+});
 
-builder.Services.AddScoped<IProgramService, ProgramService>();
-builder.Services.AddScoped<IWorkflowService, WorkflowService>();
-builder.Services.AddScoped<IApplicationTemplateService, ApplicationTemplateService>();
+IMapper mapper = mapperConfig.CreateMapper();
+
+builder.Services.AddScoped<ProgramRepository>(sp =>
+{
+    var cosmosClient = sp.GetService<CosmosClient>();
+    var logger = sp.GetService<ILogger<ProgramRepository>>();
+    var mapper = sp.GetService<IMapper>();
+
+    return new ProgramRepository(cosmosClient, logger, mapper);
+});
+
+builder.Services.AddScoped<WorkflowRepository>(sp =>
+{
+    var cosmosClient = sp.GetService<CosmosClient>();
+    var logger = sp.GetService<ILogger<WorkflowRepository>>();
+    var mapper = sp.GetService<IMapper>();
+
+    return new WorkflowRepository(cosmosClient, logger, mapper);
+});
+
+builder.Services.AddScoped<ApplicationTemplateRepo>(sp =>
+{
+    var cosmosClient = sp.GetService<CosmosClient>();
+    var logger = sp.GetService<ILogger<ApplicationTemplateRepo>>();
+    var mapper = sp.GetService<IMapper>();
+
+    return new ApplicationTemplateRepo(cosmosClient, logger, mapper);
+});
 
 
-builder.Services.AddScoped<IApplicationTemplateRepo, ApplicationTemplateRepo>();
-builder.Services.AddScoped<IWorkflowRepository, WorkflowRepository>();
+
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 var app = builder.Build();
 

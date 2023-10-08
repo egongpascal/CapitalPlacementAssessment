@@ -1,8 +1,10 @@
-﻿namespace CapitalPlacementAssessment.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CapitalPlacementAssessment.Models
 {
     public class ProgramDetails
     {
-        public int ProgramId { get; set; }
+        public string ProgramId { get; set; } = Guid.NewGuid().ToString();
         public string ProgramTitle { get; set; }
         public string ProgramSummary { get; set; }
         public string ProgramDescription { get; set; }

@@ -1,11 +1,14 @@
-﻿using CapitalPlacementAssessment.Models;
+﻿using CapitalPlacementAssessment.Domain;
+using CapitalPlacementAssessment.Domain.DTOs;
+using CapitalPlacementAssessment.Models;
 
 namespace CapitalPlacementAssessment.Repository.Implementations
 {
     public interface IProgramRepository
     {
-        Task<ProgramDetails> CreateProgram(ProgramDetails program);
-        Task<ProgramDetails> GetProgram(int id);
-        Task<ProgramDetails> UpdateProgram(ProgramDetails program);
+        Task<ResponseClass<ProgramDetailsDto>> CreateProgram(ProgramDetailsDto program);
+        Task<ResponseClass<ProgramDetailsDto>> GetProgram(string id);
+        Task<ResponseClass<PreviewDto>> GetPreview(string programId);
+        Task<ResponseClass<ProgramDetailsDto>> UpdateProgram(ProgramDetailsDto program);
     }
 }
