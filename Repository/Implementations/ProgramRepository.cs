@@ -4,7 +4,7 @@ using System.Net;
 
 namespace CapitalPlacementAssessment.Repository.Implementations
 {
-    public class ProgramRepository
+    public class ProgramRepository : IProgramRepository
     {
         private readonly CosmosClient _cosmosClient;
         private readonly ILogger<ProgramRepository> _logger;
@@ -27,17 +27,34 @@ namespace CapitalPlacementAssessment.Repository.Implementations
 
         public async Task<List<ProgramDetails>> GetAllPrograms()
         {
-            var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
-            var query = container.GetItemQueryIterator<ProgramDetails>();
-            var programs = new List<ProgramDetails>();
-
-            while (query.HasMoreResults)
+            try
             {
-                var response = await query.ReadNextAsync();
-                programs.AddRange(response.ToList());
-            }
+                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
+                var query =  container.GetItemQueryIterator<ProgramDetails>();
+                if(query != null)
+                {
+                    var programs = new List<ProgramDetails>();
+                    while (query.HasMoreResults)
+                    {
+                        var response = await query.ReadNextAsync();
+                        programs.AddRange(response.ToList());
+                        _logger.LogInformation("Programs retrieved successfully.");
 
-            return programs;
+                    }
+                    return programs;
+                }
+                else
+                {
+                    _logger.LogError("Failed to fetch the program. or program not found");
+                    return null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while creating the program.");
+                throw;
+            }
         }
 
 

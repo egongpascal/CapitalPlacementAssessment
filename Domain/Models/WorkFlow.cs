@@ -2,13 +2,13 @@
 {
     public class WorkFlow
     {
-        public List<Stage> Stages { get; set; }
+        public List<Stage> Stages { get; set; } = new List<Stage>();
     }
     public class Stage
     {
         public string Id { get; set; }
         public string StageName { get; set; }
-        public List<StageType> StageTypes { get; set; }
+        public List<StageType> StageTypes { get; set; } = new List<StageType>();
         
     }
 

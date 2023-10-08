@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Domain\DTOs\" />
-    <Folder Include="Repository\Interfaces\" />
   </ItemGroup>
 
 </Project>

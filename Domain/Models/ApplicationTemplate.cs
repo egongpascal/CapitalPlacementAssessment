@@ -1,6 +1,6 @@
 ﻿namespace CapitalPlacementAssessment.Models
 {
-    public class ApplicationForm
+    public class ApplicationTemplate
     {
         public string Id { get; set; }
         public string ProgramId { get; set; }
@@ -32,7 +32,7 @@
 
         public bool GenderVisible { get; set; }
         public bool GenderInternal { get; set; }
-        public List<CustomeQuestions>? CustomeQuestions { get; set; }
+        public List<CustomeQuestions>? CustomeQuestions { get; set; } = new List<CustomeQuestions>();
     }
 
     public class CustomeQuestions
@@ -50,8 +50,8 @@
         public bool IsEducationMandatory { get; set; }
         public bool IsResumeVisible { get; set; }
         public bool IsResumeMandatory { get; set; }
-        public List<Education> Education { get; set; }
-        public List<AdditionalQuestions>? AdditionalQuestions { get; set; }
+        public List<Education> Education { get; set; } = new List<Education>();
+        public List<AdditionalQuestions>? AdditionalQuestions { get; set; } = new List<AdditionalQuestions>();
     }
 
     public class AdditionalQuestions

@@ -6,9 +6,9 @@
         public string ProgramTitle { get; set; }
         public string ProgramSummary { get; set; }
         public string ProgramDescription { get; set; }
-        public string? KeySkills { get; set; }
-        public string? ProgramBenefits { get; set; }
-        public string? ApplicationCriteria { get; set; }
+        public List<KeySkills> KeySkills { get; set; } = new List<KeySkills>();
+        public List<ProgramBenefits>? ProgramBenefits { get; set; } = new List<ProgramBenefits>();
+        public List<ApplicationCriteria> ApplicationCriterias { get; set; } = new List<ApplicationCriteria>();
         public ProgramType ProgramType { get; set; }
         public DateOnly ApplicationOpen { get; set; }
         public int Duration { get; set; }
@@ -20,6 +20,23 @@
         public bool IsPublished { get; set; } = false;
     }
 
+    public class ProgramBenefits
+    {
+        public int Id { get; set; }
+        public string Benefit { get; set; }
+    }
+
+    public class ApplicationCriteria
+    {
+        public int Id { get; set; }
+        public string Criteria { get; set; }
+    }
+
+    public class KeySkills
+    {
+        public int Id { get; set; }
+        public string Skill { get; set; }
+    }
     public enum ProgramType
     {
         PartTime,
