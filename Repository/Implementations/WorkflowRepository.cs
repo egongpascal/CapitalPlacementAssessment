@@ -12,12 +12,22 @@ namespace CapitalPlacementAssessment.Repository.Implementations
         private readonly CosmosClient _cosmosClient;
         private readonly ILogger<WorkflowRepository> _logger;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
+        private readonly string _cid;
+        private readonly string _db;
+        private readonly string _pk;
 
-        public WorkflowRepository(CosmosClient cosmosClient, ILogger<WorkflowRepository> logger, IMapper mapper)
+        public WorkflowRepository(CosmosClient cosmosClient, ILogger<WorkflowRepository> logger, IMapper mapper, IConfiguration configuration1)
         {
             _cosmosClient = cosmosClient;
+            _mapper = mapper;
             _logger = logger;
             _mapper = mapper;
+            _cosmosClient = cosmosClient;
+            _config = configuration1;
+            _db = _config["ConnectionStrings:Database"];
+            _cid = _config["ConnectionStrings:ContainerId"];
+            _pk = _config["ConnectionStrings:PartitionKey"];
         }
         public async Task<ResponseClass<WorkflowDto>> CreateWorkFlow(WorkflowDto request)
         {
@@ -26,8 +36,8 @@ namespace CapitalPlacementAssessment.Repository.Implementations
 
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var partitionKey = new PartitionKey(newWorkflow.ProgramId);
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
                 var response = await container.CreateItemAsync(newWorkflow, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.Created)
@@ -56,8 +66,9 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var result = new ResponseClass<WorkflowDto>();
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var workflow = await container.ReadItemAsync<WorkFlow>(programId, new PartitionKey(programId));
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
+                var workflow = await container.ReadItemAsync<WorkFlow>(programId, partitionKey);
                 if (workflow != null)
                 {
                     _logger.LogInformation("fetched successfully.");
@@ -90,8 +101,8 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var update = _mapper.Map<WorkFlow>(request);
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var partitionKey = new PartitionKey(update.ProgramId);
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
                 var response = await container.ReplaceItemAsync(update, update.ProgramId, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.NoContent)

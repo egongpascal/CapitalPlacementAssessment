@@ -12,12 +12,20 @@ namespace CapitalPlacementAssessment.Repository.Implementations
         private readonly CosmosClient _cosmosClient;
         private readonly ILogger<ApplicationTemplateRepo> _logger;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
+        private readonly string _cid;
+        private readonly string _db;
+        private readonly string _pk;
 
-        public ApplicationTemplateRepo(CosmosClient cosmosClient, ILogger<ApplicationTemplateRepo> logger, IMapper mapper)
+        public ApplicationTemplateRepo(CosmosClient cosmosClient, ILogger<ApplicationTemplateRepo> logger, IMapper mapper, IConfiguration configuration1)
         {
-            _cosmosClient = cosmosClient;
             _logger = logger;
             _mapper = mapper;
+            _cosmosClient = cosmosClient;
+            _config = configuration1;
+            _db = _config["ConnectionStrings:Database"];
+            _cid = _config["ConnectionStrings:ContainerId"];
+            _pk = _config["ConnectionStrings:PartitionKey"];
         }
         public async Task<ResponseClass<ApplicationTemplateDto>> CreateApplicationTemplate(ApplicationTemplateDto request)
         {
@@ -26,8 +34,8 @@ namespace CapitalPlacementAssessment.Repository.Implementations
 
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var partitionKey = new PartitionKey("/TenantId");
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
                 var response = await container.CreateItemAsync(newAppTemp, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.Created)
@@ -56,8 +64,9 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var result = new ResponseClass<ApplicationTemplateDto>();
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var appTemp = await container.ReadItemAsync<ApplicationTemplate>(programId, new PartitionKey(programId));
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
+                var appTemp = await container.ReadItemAsync<ApplicationTemplate>(programId, partitionKey);
                 if (appTemp != null)
                 {
                     _logger.LogInformation(" fetched successfully.");
@@ -90,8 +99,8 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var update = _mapper.Map<ApplicationTemplate>(request);
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var partitionKey = new PartitionKey("TenantId");
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
                 var response = await container.ReplaceItemAsync(update, update.ProgramId, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.NoContent)

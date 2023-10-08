@@ -12,14 +12,19 @@ namespace CapitalPlacementAssessment.Repository.Implementations
         private readonly CosmosClient _cosmosClient;
         private readonly ILogger<ProgramRepository> _logger;
         private readonly IMapper _mapper;
-
-
-
-        public ProgramRepository(ILogger<ProgramRepository> logger, IMapper mapper, CosmosClient cosmosClient)
+        private readonly IConfiguration _config;
+        private readonly string _cid;
+        private readonly string _db;
+        private readonly string _pk;
+        public ProgramRepository(ILogger<ProgramRepository> logger, IMapper mapper, CosmosClient cosmosClient, IConfiguration configuration1)
         {
             _logger = logger;
             _mapper = mapper;
             _cosmosClient = cosmosClient;
+            _config = configuration1;
+            _db = _config["ConnectionStrings:Database"];
+            _cid = _config["ConnectionStrings:ContainerId"];
+            _pk = _config["ConnectionStrings:PartitionKey"];
         }
 
         public async Task<ResponseClass<ProgramDetailsDto>> GetProgram(string id)
@@ -27,8 +32,9 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var result = new ResponseClass<ProgramDetailsDto>();
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var program = await container.ReadItemAsync<ProgramDetails>(id.ToString(), new PartitionKey(id.ToString()));
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
+                var program = await container.ReadItemAsync<ProgramDetails>(id, partitionKey);
                 if (program != null)
                 {
                     _logger.LogInformation("Program fetched successfully.");
@@ -52,7 +58,6 @@ namespace CapitalPlacementAssessment.Repository.Implementations
                 _logger.LogError(ex, "An error occurred while fetching program.");
                 throw;
             }
-            
         }
 
         public async Task<ResponseClass<ProgramDetailsDto>> CreateProgram(ProgramDetailsDto program)
@@ -62,8 +67,8 @@ namespace CapitalPlacementAssessment.Repository.Implementations
 
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var partitionKey = new PartitionKey("/TenantId");
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
                 var response = await container.CreateItemAsync(newProgram, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.Created)
@@ -94,8 +99,8 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var update = _mapper.Map<ProgramDetails>(program);
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var partitionKey = new PartitionKey("/TenantId");
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
                 var response = await container.ReplaceItemAsync(update, update.id, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.NoContent)
@@ -125,8 +130,9 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var result = new ResponseClass<PreviewDto>();
             try
             {
-                var container = _cosmosClient.GetContainer("TestDB", "Container1");
-                var program = await container.ReadItemAsync<ProgramDetails>(programId, new PartitionKey(programId));
+                var container = _cosmosClient.GetContainer(_db, _cid);
+                var partitionKey = new PartitionKey(_pk);
+                var program = await container.ReadItemAsync<ProgramDetails>(programId, partitionKey);
                 var res = program.Resource;
                 if (program != null)
                 {
@@ -159,8 +165,6 @@ namespace CapitalPlacementAssessment.Repository.Implementations
                 _logger.LogError(ex, "An error occurred while fetching preview.");
                 throw;
             }
-
         }
-
     }
 }
