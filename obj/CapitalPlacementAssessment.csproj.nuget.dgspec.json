@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hp\\Source\\Repos\\CapitalPlacementAssessment\\CapitalPlacementAssessment.csproj": {}
+    "C:\\Users\\hp\\source\\repos\\CapitalPlacementAssessment\\CapitalPlacementAssessment.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hp\\Source\\Repos\\CapitalPlacementAssessment\\CapitalPlacementAssessment.csproj": {
+    "C:\\Users\\hp\\source\\repos\\CapitalPlacementAssessment\\CapitalPlacementAssessment.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hp\\Source\\Repos\\CapitalPlacementAssessment\\CapitalPlacementAssessment.csproj",
+        "projectUniqueName": "C:\\Users\\hp\\source\\repos\\CapitalPlacementAssessment\\CapitalPlacementAssessment.csproj",
         "projectName": "CapitalPlacementAssessment",
-        "projectPath": "C:\\Users\\hp\\Source\\Repos\\CapitalPlacementAssessment\\CapitalPlacementAssessment.csproj",
+        "projectPath": "C:\\Users\\hp\\source\\repos\\CapitalPlacementAssessment\\CapitalPlacementAssessment.csproj",
         "packagesPath": "C:\\Users\\hp\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hp\\Source\\Repos\\CapitalPlacementAssessment\\obj\\",
+        "outputPath": "C:\\Users\\hp\\source\\repos\\CapitalPlacementAssessment\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\hp\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,6 +40,14 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "Microsoft.AspNet.Mvc": {
+              "target": "Package",
+              "version": "[5.2.9, )"
+            },
             "Microsoft.Azure.Cosmos": {
               "target": "Package",
               "version": "[3.35.4, )"

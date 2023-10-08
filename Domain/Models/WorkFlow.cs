@@ -2,13 +2,15 @@
 {
     public class WorkFlow
     {
-        public List<Stage> Stages { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string ProgramId { get; set; }
+        public List<Stage>? Stages { get; set; } = new List<Stage>();
     }
     public class Stage
     {
-        public string Id { get; set; }
-        public string StageName { get; set; }
-        public List<StageType> StageTypes { get; set; }
+        public string? Id { get; set; }
+        public string? StageName { get; set; }
+        public List<StageType>? StageTypes { get; set; } = new List<StageType>();
         
     }
 
@@ -23,9 +25,9 @@
     }
     public class VideoInterview
     {
-        public string InterviewQuestion { get; set; }
-        public string AdditionalInformation { get; set; }
-        public int VideoDuration { get; set; }
-        public DateOnly SubmissionDeadline { get; set; }
+        public string? InterviewQuestion { get; set; }
+        public string? AdditionalInformation { get; set; }
+        public int? VideoDuration { get; set; }
+        public DateOnly? SubmissionDeadline { get; set; }
     }
 }
