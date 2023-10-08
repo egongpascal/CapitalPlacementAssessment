@@ -26,7 +26,7 @@ namespace CapitalPlacementAssessment.Repository.Implementations
 
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
                 var partitionKey = new PartitionKey(newWorkflow.ProgramId);
                 var response = await container.CreateItemAsync(newWorkflow, partitionKey);
 
@@ -56,7 +56,7 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var result = new ResponseClass<WorkflowDto>();
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
                 var workflow = await container.ReadItemAsync<WorkFlow>(programId, new PartitionKey(programId));
                 if (workflow != null)
                 {
@@ -90,7 +90,7 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var update = _mapper.Map<WorkFlow>(request);
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
                 var partitionKey = new PartitionKey(update.ProgramId);
                 var response = await container.ReplaceItemAsync(update, update.ProgramId, partitionKey);
 

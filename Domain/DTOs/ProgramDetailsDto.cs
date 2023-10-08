@@ -5,7 +5,7 @@ namespace CapitalPlacementAssessment.Domain.DTOs
 {
     public class ProgramDetailsDto
     {
-        public string ProgramId { get; set; }
+        public string ProgramId { get; set; } 
         [Required(ErrorMessage = "Program Title is required.")]
         public string ProgramTitle { get; set; }
         public string ProgramSummary { get; set; }
@@ -19,13 +19,13 @@ namespace CapitalPlacementAssessment.Domain.DTOs
         public ProgramType ProgramType { get; set; }
 
         [Required(ErrorMessage = "ApplicationOpen is required.")]
-        public DateOnly ApplicationOpen { get; set; }
+        public string ApplicationOpen { get; set; }
         public int Duration { get; set; }
         public Qualifications MinQualifications { get; set; }
-        public DateOnly ProgramStarts { get; set; }
+        public string ProgramStarts { get; set; }
 
         [Required(ErrorMessage = "ApplicationClose is required.")]
-        public DateOnly ApplicationClose { get; set; }
+        public string ApplicationClose { get; set; }
 
         [Required(ErrorMessage = "Program Location is required.")]
         public string Location { get; set; } = "Fully Remote";

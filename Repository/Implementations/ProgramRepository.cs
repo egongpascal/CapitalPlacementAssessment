@@ -15,11 +15,11 @@ namespace CapitalPlacementAssessment.Repository.Implementations
 
 
 
-        public ProgramRepository(CosmosClient cosmosClient, ILogger<ProgramRepository> logger, IMapper mapper)
+        public ProgramRepository(ILogger<ProgramRepository> logger, IMapper mapper, CosmosClient cosmosClient)
         {
-            _cosmosClient = cosmosClient;
             _logger = logger;
             _mapper = mapper;
+            _cosmosClient = cosmosClient;
         }
 
         public async Task<ResponseClass<ProgramDetailsDto>> GetProgram(string id)
@@ -27,7 +27,7 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var result = new ResponseClass<ProgramDetailsDto>();
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
                 var program = await container.ReadItemAsync<ProgramDetails>(id.ToString(), new PartitionKey(id.ToString()));
                 if (program != null)
                 {
@@ -62,8 +62,8 @@ namespace CapitalPlacementAssessment.Repository.Implementations
 
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
-                var partitionKey = new PartitionKey(newProgram.ProgramId);
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
+                var partitionKey = new PartitionKey("/TenantId");
                 var response = await container.CreateItemAsync(newProgram, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.Created)
@@ -88,16 +88,15 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             }
         }
 
-
         public async Task<ResponseClass<ProgramDetailsDto>> UpdateProgram(ProgramDetailsDto program)
         {
             var result = new ResponseClass<ProgramDetailsDto>();
             var update = _mapper.Map<ProgramDetails>(program);
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
-                var partitionKey = new PartitionKey(update.ProgramId.ToString());
-                var response = await container.ReplaceItemAsync(update, update.ProgramId, partitionKey);
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
+                var partitionKey = new PartitionKey("/TenantId");
+                var response = await container.ReplaceItemAsync(update, update.id, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.NoContent)
                 {
@@ -126,7 +125,7 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var result = new ResponseClass<PreviewDto>();
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
                 var program = await container.ReadItemAsync<ProgramDetails>(programId, new PartitionKey(programId));
                 var res = program.Resource;
                 if (program != null)

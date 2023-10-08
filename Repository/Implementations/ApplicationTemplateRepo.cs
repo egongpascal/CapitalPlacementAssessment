@@ -26,8 +26,8 @@ namespace CapitalPlacementAssessment.Repository.Implementations
 
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
-                var partitionKey = new PartitionKey(newAppTemp.ProgramId);
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
+                var partitionKey = new PartitionKey("/TenantId");
                 var response = await container.CreateItemAsync(newAppTemp, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.Created)
@@ -56,7 +56,7 @@ namespace CapitalPlacementAssessment.Repository.Implementations
             var result = new ResponseClass<ApplicationTemplateDto>();
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
                 var appTemp = await container.ReadItemAsync<ApplicationTemplate>(programId, new PartitionKey(programId));
                 if (appTemp != null)
                 {
@@ -87,11 +87,11 @@ namespace CapitalPlacementAssessment.Repository.Implementations
         public async Task<ResponseClass<ApplicationTemplateDto>> UpdateApplicationTemplate(ApplicationTemplateDto request)
         {
             var result = new ResponseClass<ApplicationTemplateDto>();
-            var update = _mapper.Map<ProgramDetails>(request);
+            var update = _mapper.Map<ApplicationTemplate>(request);
             try
             {
-                var container = _cosmosClient.GetContainer("your-database-id", "your-container-id");
-                var partitionKey = new PartitionKey(update.ProgramId);
+                var container = _cosmosClient.GetContainer("TestDB", "Container1");
+                var partitionKey = new PartitionKey("TenantId");
                 var response = await container.ReplaceItemAsync(update, update.ProgramId, partitionKey);
 
                 if (response.StatusCode == HttpStatusCode.NoContent)
